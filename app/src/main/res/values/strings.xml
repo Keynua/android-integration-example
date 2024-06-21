@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WebViewExample</string>
+    <string name="idLabel">Id</string>
+    <string name="statusLabel">Status</string>
+</resources>
