@@ -26,8 +26,12 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val MY_PERMISSIONS_REQUEST_CAMERA = 100
-        // TODO: Change Keynua URL according to the current environment
-        private const val KEYNUA_URL = "https://sign.dev.keynua.com"
+        /**
+         * TODO: Change Keynua URL according to the current environment
+         * PROD: https://sign.keynua.com
+         * STG: https://sign.stg.keynua.com
+         */
+        private const val KEYNUA_URL = "https://sign.stg.keynua.com"
         // TODO: Change this eventURL with your customURL APP
         private const val EVENT_URL = "keynuaapp://com.keynua.webviewexample"
     }
@@ -58,8 +62,7 @@ class MainActivity : AppCompatActivity() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 Log.d("WebViewURL", "URL: ${request?.url}")
                 /**
-                 * TODO: Replace this logic with the custom provided by Keynua to close the Webiew
-                 * This logic is for demonstration purposes only
+                 * Validate that the URL is the same as the one sent in EventURL
                  */
                 if (request?.url.toString().startsWith(EVENT_URL)) {
                     closeWebView()
