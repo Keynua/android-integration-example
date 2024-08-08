@@ -65,17 +65,30 @@ class MainActivity : AppCompatActivity() {
                  * Validate that the URL is the same as the one sent in EventURL
                  */
                 if (request?.url.toString().startsWith(EVENT_URL)) {
-                    closeWebView()
                     val queryParams = extractQueryParams(request?.url.toString())
+                    val status = queryParams["status"]
+                    val errCode = queryParams["errCode"]
+
                     queryParams.forEach { (key, value) ->
                         Log.d("WebViewURLParams", "$key: $value")
                     }
-                    /**
-                     * If it's an Identification, it will return "identificationId". If
-                     * it's a Contract, it will return "contractId"
-                     */
-                    idTextView.text = queryParams["identificationId"] ?: queryParams["contractId"]
-                    statusTextView.text = queryParams["status"]
+
+                    if (status != null && (status == "done" || status == "error" && errCode in listOf(
+                            "ReniecFailed",
+                            "InvalidInstructionGrade",
+                            "NotAllowedCancellation",
+                            "NotAllowedObservation",
+                            "ContractDeleted",
+                            "ContractExpired",
+                            "UserMaxAttempts"))) {
+                        closeWebView()
+                        /**
+                         * If it's an Identification, it will return "identificationId". If
+                         * it's a Contract, it will return "contractId"
+                         */
+                        idTextView.text = queryParams["identificationId"] ?: queryParams["contractId"]
+                        statusTextView.text = status
+                    }
                     return true
                 }
                 return false
