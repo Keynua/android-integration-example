@@ -17,7 +17,8 @@ Este repositorio contiene una aplicación de ejemplo escrita en Kotlin para Andr
 - **Detección de Finalización del Flujo**: La aplicación identifica la finalización del flujo de validación en el WebView. Para ello, deben enviar una URL personalizada como valor del parámetro `eventURL` en la URL de firma. Si se detecta la presencia de `eventURL`, se añadirá un botón "Finalizar" al concluir la validación. Al presionar el botón "Finalizar", la aplicación ejecuta la URL contenida en `eventURL`, añadiendo los siguientes parámetros como parte de la consulta:
   - `identificationId`: ID de la identificación.
   - `contractId`: ID del contrato.
-  - `status`: Estado de la validación, actualmente solo se soporta el estado "done".
+  - `status`: Estado de la validación. Puede ser "done" o "error"
+  - `errCode`: Si el status es "error", acá obtendrás el código de error para que puedas decidir como reaccionar. La lista de errores la encontrarás en la sección ["Errores por tipo de Item"](https://keynua.github.io/slate/#errores-por-tipo-de-item) de la documentación.
 
 ## Pre-requisitos
 
