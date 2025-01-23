@@ -68,7 +68,7 @@ Debe enviarse el atributo `eventErrorURL`. Si se detecta una URL en este paráme
 
 #### **Ejemplo de URL**
 
-Si deseas redirigir a `myapp://com.company.example` al finalizar el flujo, la URL del WebView debe estructurarse de la siguiente manera:
+Si deseas enviar la información de error a `myapp://com.company.example`, la URL del WebView debe estructurarse de la siguiente manera:
 
 ```
 https://sign.keynua.com/index.html?token=eyJ0...Qis&eventErrorURL=myapp://com.company.example
@@ -106,7 +106,7 @@ Debe enviarse el atributo `eventLogURL`. Si se proporciona este parámetro, se e
 
 #### **Ejemplo de URL**
 
-Si deseas redirigir a `myapp://com.company.example` al finalizar el flujo, la URL del WebView debe estructurarse de la siguiente manera:
+Si deseas enviar la información de los logs a `myapp://com.company.example`, la URL del WebView debe estructurarse de la siguiente manera:
 
 ```
 https://sign.keynua.com/index.html?token=eyJ0...Qis&eventLogURL=myapp://com.company.example
