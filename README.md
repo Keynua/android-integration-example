@@ -78,7 +78,7 @@ https://sign.keynua.com/index.html?token=eyJ0...Qis&eventErrorURL=myapp://com.co
 
 Debe enviarse el atributo `eventLogURL`. Si se proporciona este parámetro, se enviarán logs del flujo de validación en tiempo real, lo que permitirá monitorear en qué estado se encuentra el usuario dentro del proceso.
 
-- **`eventType`**: El valor siempre será **log**.
+- **`status`**: En este evento, el valor siempre será **info**.
 - **`funnelId`**: Hace referencia al paso actual en el que se encuentra el usuario. Puede tener los siguientes valores:
 
   - **`3DLibraryDownloadStarted`**: Comenzó la descarga de la librería 3D.

@@ -121,7 +121,9 @@ class MainActivity : AppCompatActivity() {
             val token = "USER-TOKEN-HERE"
             val uri = Uri.parse("${KEYNUA_URL}?token=${token}")
             val uriBuilder = uri.buildUpon()
-            uriBuilder.appendQueryParameter("eventURL", EVENT_URL)
+            uriBuilder.appendQueryParameter("eventDoneURL", EVENT_URL)
+            uriBuilder.appendQueryParameter("eventErrorURL", EVENT_URL)
+            uriBuilder.appendQueryParameter("eventLogURL", EVENT_URL)
             webView.loadUrl(uriBuilder.build().toString())
         }
     }
