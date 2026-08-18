@@ -3,6 +3,7 @@ package com.keynua.webviewexample
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -124,6 +125,18 @@ class MainActivity : AppCompatActivity() {
             uriBuilder.appendQueryParameter("eventDoneURL", EVENT_URL)
             uriBuilder.appendQueryParameter("eventErrorURL", EVENT_URL)
             uriBuilder.appendQueryParameter("eventLogURL", EVENT_URL)
+            /**
+             * Forward a STABLE device identifier so Keynua can recognize a returning
+             * device (fraud/velocity — never proof of fraud on its own). ANDROID_ID is
+             * stable for this app's signing key and, being native storage, survives the
+             * WebView's storage being cleared or recreated between sessions — which the
+             * widget's own web-layer id cannot. Passing it makes it the strongest anchor.
+             * (Alternative: a UUID you generate once and persist in SharedPreferences.)
+             */
+            val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+            if (!deviceId.isNullOrEmpty()) {
+                uriBuilder.appendQueryParameter("deviceId", deviceId)
+            }
             webView.loadUrl(uriBuilder.build().toString())
         }
     }
