@@ -112,6 +112,25 @@ Si deseas enviar la información de los logs a `myapp://com.company.example`, la
 https://sign.keynua.com/index.html?token=eyJ0...Qis&eventLogURL=myapp://com.company.example
 ```
 
+## Identificador de dispositivo (recomendado)
+
+Puedes enviar el atributo `deviceId` con un identificador **estable** del dispositivo. Keynua lo usa para reconocer un dispositivo recurrente (antifraude / velocidad) — **nunca** como prueba de fraude por sí solo.
+
+Es especialmente importante en WebView: el almacenamiento del WebView (localStorage, IndexedDB) puede borrarse o recrearse entre sesiones, y con él se pierde el identificador que el widget genera por su cuenta. Un id nativo persiste fuera del WebView, por lo que sobrevive ese borrado y se convierte en el anclaje más fuerte.
+
+En Android se recomienda `Settings.Secure.ANDROID_ID` (estable para la clave de firma de tu app), o bien un UUID que generes una sola vez y persistas en `SharedPreferences`.
+
+```kotlin
+val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+uriBuilder.appendQueryParameter("deviceId", deviceId)
+```
+
+#### **Ejemplo de URL**
+
+```
+https://sign.keynua.com/index.html?token=eyJ0...Qis&deviceId=9774d56d682e549c
+```
+
 ## Contacto
 
 Para consultas, puedes contactarnos a operaciones@keynua.com
