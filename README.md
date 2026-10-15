@@ -103,6 +103,9 @@ Debe enviarse el atributo `eventLogURL`. Si se proporciona este parámetro, se e
   - **`input-value-changed`**: Cuando el usuario ha finalizado la acción en la vista actual. Por ejemplo, aceptó los Términos y Condiciones o finalizó el paso de la Prueba de Vida 3D
   - **`3d-started`**: Indica que el usuario ha comenzado el flujo de Prueba de Vida 3D y/o validación del Documento de Identidad 3D.
   - **`3d-finished`**: Indica que el flujo de Prueba de Vida 3D y/o validación del Documento de Identidad 3D ha finalizado. Si ha ocurrido un error en el flujo, recibirás el detalle en el [Evento de Error](#detección-de-errores-en-el-flujo)
+  - **`otp-view`**: Cuando se muestra la vista para ingresar el código OTP.
+  - **`otp-send`**: Cuando se solicita el envío del código OTP.
+  - **`otp-verify`**: Cuando el usuario envía el código OTP para verificarlo.
 
 #### **Ejemplo de URL**
 
@@ -110,6 +113,20 @@ Si deseas enviar la información de los logs a `myapp://com.company.example`, la
 
 ```
 https://sign.keynua.com/index.html?token=eyJ0...Qis&eventLogURL=myapp://com.company.example
+```
+
+### **URL de respaldo**
+
+El atributo `eventURL` se usa cuando falta la URL específica de un evento. Si no envías `eventDoneURL`, el botón **"Finalizar"** abre `eventURL`. Si no envías `eventErrorURL`, los errores se envían a `eventURL`. Si no envías `eventLogURL`, los logs se envían a `eventURL`.
+
+Si solo envías `eventURL`, el primer log del flujo también navega a esa URL. Los logs se disparan en cada paso, con `window.location.replace`, y no esperan al botón **"Finalizar"**. No reutilices la URL de finalización para los logs: la aplicación tiene que interceptar el esquema propio y cancelar la navegación. Si no lo hace, el WebView sale del widget.
+
+Conviene enviar por separado los atributos de [finalización](#detección-de-finalización-del-flujo), [errores](#detección-de-errores-en-el-flujo) y [logs](#detección-de-logs-del-flujo).
+
+#### **Ejemplo de URL**
+
+```
+https://sign.keynua.com/index.html?token=eyJ0...Qis&eventURL=myapp://com.company.example
 ```
 
 ## Identificador de dispositivo (recomendado)
@@ -129,6 +146,57 @@ uriBuilder.appendQueryParameter("deviceId", deviceId)
 
 ```
 https://sign.keynua.com/index.html?token=eyJ0...Qis&deviceId=9774d56d682e549c
+```
+
+## Cámara del documento
+
+Estos parámetros ajustan la cámara con la que el usuario fotografía el documento de identidad en el flujo Spark. No cambian la prueba de vida ni la cámara frontal.
+
+Son opcionales. Si no envías ninguno, la cámara queda como siempre: enfoca una sola vez al abrirse, pide un ancho de 1280 px y el recuadro ocupa todo el visor.
+
+Se agregan a la misma URL del WebView, con `appendQueryParameter`. Un valor que no cumpla las reglas de abajo se ignora y se usa el valor por defecto de ese parámetro. Los demás parámetros válidos sí se aplican.
+
+### `docFocusMode`
+
+Controla cuándo enfoca la cámara trasera.
+
+- **`single-shot`** (valor por defecto). Al abrir, la cámara enfoca una vez lo que tiene delante y deja el foco fijo. Si el usuario acerca el documento después, no vuelve a enfocar hasta que toca el recuadro.
+- **`continuous`**. La cámara sigue enfocando mientras el usuario mueve el documento. Es el modo de la app de cámara del teléfono.
+
+Cualquier otro texto se ignora y se mantiene `single-shot`.
+
+### `docResolutions`
+
+Anchos de la cámara en horizontal, en píxeles, separados por coma. El primero es el que se pide. Los siguientes solo se intentan si el navegador rechaza el anterior. No es una lista de la que el teléfono elige la mejor: con un valor aceptado, se queda con el modo más cercano a ese ancho.
+
+Valores permitidos: `800`, `1024`, `1280`, `1920` y `2560`. Máximo 3. Un número que no esté en la lista se descarta. Si después de descartar no queda ninguno, se usa la lista por defecto.
+
+Sin este parámetro se pide `1280` y, si esa petición falla, `1024` y después `800`.
+
+En un teléfono en vertical el video llega rotado. Pedir `1920` suele entregar unos 1080×1920, no una imagen de 1920 px de ancho. `2560` pide más detalle y aumenta la memoria que usa la detección automática del documento.
+
+Para la mayoría de los casos, `1920` es el valor recomendado.
+
+### `docFrameCoverage`
+
+Fracción del visor que debe ocupar el documento. Va de `0.7` a `1`.
+
+- **`1`** (valor por defecto). El recuadro es todo el visor. El documento hay que acercarlo hasta llenar la cámara.
+- Un valor menor, por ejemplo **`0.85`**, deja un marco interior. El documento puede sostenerse más lejos, pero la foto usa menos píxeles. Conviene acompañarlo de un `docResolutions` más alto.
+
+Si el número es menor que `0.7`, se usa `0.7`. Si es mayor que `1`, se usa `1`. Si no es un número, se ignora y se mantiene `1`.
+
+### Ejemplo
+
+```kotlin
+uriBuilder.appendQueryParameter("docFocusMode", "continuous")
+uriBuilder.appendQueryParameter("docResolutions", "1920")
+```
+
+#### **Ejemplo de URL**
+
+```
+https://sign.keynua.com/index.html?token=eyJ0...Qis&docFocusMode=continuous&docResolutions=1920
 ```
 
 ## Contacto
